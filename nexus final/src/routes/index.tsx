@@ -1,8 +1,4 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { convexQuery } from '@convex-dev/react-query'
-import { useMutation } from 'convex/react'
-import { api } from '../../convex/_generated/api'
 import { motion } from 'framer-motion'
 import { CheckCircle2, Phone, Menu, X, Calculator, ShieldCheck, BookOpen, Users, Star, Mail, Globe, Clock, Shield, ArrowRight, MessageSquare, Headphones, DollarSign, Award } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
@@ -18,9 +14,41 @@ const iconMap: Record<string, any> = {
   Users,
 }
 
+// Static Services Data
+const servicesData = [
+  {
+    _id: "1",
+    title: "Tax Preparation",
+    description: "Expert preparation of individual and business tax returns with meticulous attention to U.S. tax codes.",
+    icon: "Calculator",
+    details: ["1040/1041 Returns", "1120/1120S/1065", "State & Local Tax", "IRS Notice Response"]
+  },
+  {
+    _id: "2",
+    title: "Bookkeeping",
+    description: "Comprehensive financial record-keeping to ensure your clients' books are always trial-balance ready.",
+    icon: "BookOpen",
+    details: ["Bank Reconciliation", "Accounts Payable/Receivable", "General Ledger", "Financial Statements"]
+  },
+  {
+    _id: "3",
+    title: "Audit Support",
+    description: "High-level assistance for audit engagements, ensuring documentation and testing meet rigorous standards.",
+    icon: "ShieldCheck",
+    details: ["Workpaper Preparation", "Internal Control Testing", "Substantive Testing", "Analytical Procedures"]
+  },
+  {
+    _id: "4",
+    title: "Payroll Services",
+    description: "Seamless payroll processing and compliance management for firms and their business clients.",
+    icon: "Users",
+    details: ["Payroll Processing", "Tax Filings", "W-2/1099 Issuance", "Compliance Reporting"]
+  }
+];
+
 function HomePage() {
-  const { data: services } = useSuspenseQuery(convexQuery(api.queries.listServices, {}))
-  const createLead = useMutation(api.leads.create)
+  const services = servicesData;
+  // const createLead = useMutation(api.leads.create)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [formState, setFormState] = useState({
     name: '',
@@ -35,15 +63,8 @@ function HomePage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    await createLead({
-      name: formState.name,
-      email: formState.email,
-      businessName: formState.company,
-      revenueRange: formState.revenue || 'Not specified',
-      serviceNeeded: formState.serviceNeeded || 'General Inquiry',
-      phone: formState.phone,
-      message: formState.message,
-    })
+    // In a pure static build, we just show a success message.
+    // For real lead capture, you can add an action="https://formspree.io/f/your-id" to the <form> tag.
     setIsSubmitted(true)
     setFormState({ name: '', email: '', company: '', revenue: '', message: '', phone: '', serviceNeeded: '' })
     setTimeout(() => setIsSubmitted(false), 5000)
